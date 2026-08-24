@@ -91,7 +91,15 @@ for line in lines:
   key, _, value = line.partition("=")
   properties[key.strip()] = json.loads(value)
 
-if 'version' not in properties:
+if 'no_version' in properties:
+  if properties['no_version'] != 1:
+    print("error: 'no_version' must be 1")
+    sys.exit(7)
+
+  if 'version' in properties:
+    print("error: 'no_version' cannot be present along with 'version'")
+    sys.exit(7)
+elif 'version' not in properties:
   print("error: build properties don't include 'version'")
   sys.exit(6)
 
@@ -133,7 +141,7 @@ for line in output.splitlines():
     print("\n-----------------\nCOMPILATION ERROR\n")
     sys.exit(3)
 
-jarfile = "build/libs/%s-%s.jar" % (os.path.basename(os.getcwd()), properties['version'])
+jarfile = "build/libs/%s%s.jar" % (os.path.basename(os.getcwd()), ("-" + properties['version']) if 'version' in properties else "")
 
 with open(jarfile, 'wb') as data:
   zip = zipfile.ZipFile(data, 'w', compression=zipfile.ZIP_DEFLATED)
