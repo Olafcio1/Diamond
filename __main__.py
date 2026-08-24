@@ -103,6 +103,10 @@ elif 'version' not in properties:
   print("error: build properties don't include 'version'")
   sys.exit(6)
 
+if properties.get("no_manifest") not in (None, 1):
+    print("error: 'no_manifest' must be 1")
+    sys.exit(9)
+
 os.makedirs("build", exist_ok=True)
 os.makedirs("build/libs", exist_ok=True)
 os.makedirs("build/classes", exist_ok=True)
@@ -151,14 +155,15 @@ with open(jarfile, 'wb') as data:
   for path in paths:
     zip.write(path, path.removeprefix('build/classes/'))
 
-  if 'main_class' in properties:
-    zip.writestr("META-INF/MANIFEST.MF", f"""
+  if 'no_manifest' not in properties:
+    if 'main_class' in properties:
+      zip.writestr("META-INF/MANIFEST.MF", f"""
 Manifest-Version: 1.0
 Main-Class: {properties['main_class']}
 
 """[1:-1])
-  else:
-    zip.writestr("META-INF/MANIFEST.MF", f"""
+    else:
+      zip.writestr("META-INF/MANIFEST.MF", f"""
 Manifest-Version: 1.0
 
 """[1:-1])
