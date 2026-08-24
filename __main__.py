@@ -114,7 +114,7 @@ def add(path: str, files: list, filechecker = lambda _: True) -> list:
 
     for fn in inside:
       add(path + "/" + fn, files)
-  elif filechecker(path):
+  elif os.path.exists(path) and filechecker(path):
     files.append(path)
 
   return files
