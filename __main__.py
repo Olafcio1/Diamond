@@ -121,8 +121,9 @@ def add(path: str, files: list, filechecker = lambda _: True) -> list:
 
 output = subprocess.run([
   "javac",
-  "-source", str(properties.get("java_version", "25")),
-  "-target", str(properties.get("java_version", "25")),
+  "--release", str(properties.get("java_version", "25")),
+  #"-source", str(properties.get("java_version", "25")),
+  #"-target", str(properties.get("java_version", "25")),
   "-cp", ";".join([os.path.abspath(l) for l in properties['libs']]) if 'libs' in properties else (os.getcwd() + "/libs/*"),
   "-sourcepath", os.getcwd() + "/%s/" % sub,
   "-encoding", "UTF8",
